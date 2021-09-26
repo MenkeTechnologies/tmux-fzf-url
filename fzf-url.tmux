@@ -17,6 +17,5 @@ tmux_get() {
 key="$(tmux_get '@fzf-url-bind' 'u')"
 history_limit="$(tmux_get '@fzf-url-history-limit' 'screen')"
 extra_filter="$(tmux_get '@fzf-url-extra-filter' '')"
-echo "$extra_filter" > /tmp/filter
 
-tmux bind-key "$key" run -b "$SCRIPT_DIR/fzf-url.sh '$extra_filter' $history_limit";
+tmux bind-key "$key" run -b "$SCRIPT_DIR/fzf-url.sh $history_limit $extra_filter";
