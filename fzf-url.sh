@@ -7,15 +7,16 @@
 exec &>> "${ZPWR_LOGFILE:-/tmux-$(id -u)-fzf-url.log}"
 
 get_fzf_options() {
-    local fzf_options
-    local fzf_default_options='-d 35% -m -0 --no-preview --no-border'
+    local fzf_options pre
+    pre='x=$(echo {} | awk "{print \$2}"); curl -fsSL $x'
+    local fzf_default_options="-d 35% -m -0 --no-border --preview '$pre'"
     fzf_options="$(tmux show -gqv '@fzf-url-fzf-options')"
     [[ -n "$fzf_options" ]] && echo "$fzf_options" || echo "$fzf_default_options"
 }
 
 
 limit='screen'
-(( $# >= 2 )) && limit="$2"
+(( $# >= 1 )) && limit="$1"
 
 if [[ $limit == 'screen' ]]; then
     content="$(tmux capture-pane -J -p)"
@@ -37,9 +38,11 @@ printf "%3d  %s\n", ++$c, $_
 }'
 )"
 
-[[ -z "$items" ]] && exit
+[[ -z "$items" ]] && exit 0
 
 
 while read; do
     ${ZPWR_OPEN_CMD:-open} "$REPLY"
 done < <( eval "fzf-tmux $(get_fzf_options)" <<< "$items" | awk '{print $2}' )
+
+exit 0
