@@ -4,7 +4,7 @@
 #    Email: wenxuangm@gmail.com
 #  Created: 2018-04-06 12:12
 #===============================================================================
-exec &>> "${ZPWR_LOGFILE:-/tmux-$(id -u)-fzf-url.log}"
+exec &>> "${ZPWR_LOGFILE:-${TMPDIR:-/tmp}/tmux-$(id -u)-fzf-url.log}"
 
 get_fzf_options() {
     local fzf_options pre
@@ -15,14 +15,15 @@ get_fzf_options() {
 }
 
 
-limit='screen'
-(( $# >= 1 )) && limit="$1"
+(( $# >= 1 )) && limit="$1" || limit='screen'
 
 if [[ $limit == 'screen' ]]; then
     content="$(tmux capture-pane -J -p)"
 else
     content="$(tmux capture-pane -J -p -S -"$limit")"
 fi
+
+[[ -n "$2" ]] && subCommand="$2" || subCommand="open"
 
 items="$(
 
@@ -42,7 +43,12 @@ printf "%3d  %s\n", ++$c, $_
 
 
 while read; do
-    ${ZPWR_OPEN_CMD:-open} "$REPLY"
+    if [[ "$subCommand" == open ]]; then
+        ${ZPWR_OPEN_CMD:-open} "$REPLY"
+    elif [[ -n "$ZPWR_COPY_CMD" && -f "$ZPWR_TMUX/google.sh" ]]; then
+        printf -- "%s" "$REPLY" | $ZPWR_COPY_CMD
+        bash "$ZPWR_TMUX/google.sh" google
+    fi
 done < <( eval "fzf-tmux $(get_fzf_options)" <<< "$items" | awk '{print $2}' )
 
 exit 0
