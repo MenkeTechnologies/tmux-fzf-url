@@ -27,11 +27,14 @@ subcommand="${2:-open}"
 
 items="$(
 
-echo "$content" | perl -MList::Util=uniq -e '
+# remove live numbers and join separated lines with -
+echo "$content" |
+    perl -0pe 's@-\s*\n\s*\d*\s*@-@g' |
+    perl -MList::Util=uniq -e '
 @l=reverse<>; @m=(); $c=0;
 do{
-    push (@m, $&) while m{(?:https?|ftp|file|git|ssh):/?//[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]}g;
-    push (@m, "http://$2") while m{(^|\s)([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(?::[0-9]{1,5})?(?:/\S+)*)}g;
+    push (@m, $&) while m{\b(?:https?|ftp|file|git|ssh):/?//[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]\b}g;
+    push (@m, "http://$2") while m{\b(^|\s)([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(?::[0-9]{1,5})?(?:/\S+)*)\b}g;
 } for @l;
 printf "%3d  %s\n", ++$c, $_ for uniq(@m)
 '
