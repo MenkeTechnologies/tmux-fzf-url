@@ -1,71 +1,103 @@
-# tmux-fzf-url
+```
+ ██████╗███╗   ███╗██╗   ██╗██╗  ██╗    ███████╗███████╗███████╗    ██╗   ██╗██████╗ ██╗
+╚══██╔══╝████╗ ████║██║   ██║╚██╗██╔╝    ██╔════╝╚══███╔╝██╔════╝    ██║   ██║██╔══██╗██║
+   ██║   ██╔████╔██║██║   ██║ ╚███╔╝     █████╗    ███╔╝ █████╗      ██║   ██║██████╔╝██║
+   ██║   ██║╚██╔╝██║██║   ██║ ██╔██╗     ██╔══╝   ███╔╝  ██╔══╝     ██║   ██║██╔══██╗██║
+   ██║   ██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗    ██║     ███████╗██║        ╚██████╔╝██║  ██║███████╗
+   ╚═╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝    ╚═╝     ╚══════╝╚═╝         ╚═════╝ ╚═╝  ╚═╝╚══════╝
+```
 
 [![TPM](https://img.shields.io/badge/tpm--support-true-blue)](https://github.com/tmux-plugins/tpm)
 [![Awesome](https://img.shields.io/badge/Awesome-tmux-d07cd0?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABVklEQVRIS+3VvWpVURDF8d9CRAJapBAfwWCt+FEJthIUUcEm2NgIYiOxsrCwULCwktjYKSgYLfQF1JjCNvoMNhYRCwOO7HAiVw055yoBizvN3nBmrf8+M7PZsc2RbfY3AfRWeNMSVdUlHEzS1t6oqvt4n+TB78l/AKpqHrdwLcndXndU1WXcw50k10c1PwFV1fa3cQVzSR4PMd/IqaoLeIj2N1eTfG/f1gFVtQMLOI+zSV6NYz4COYFneIGLSdZSVbvwCMdxMsnbvzEfgRzCSyzjXAO8xlHcxMq/mI9oD+AGlhqgxjD93OVOD9TUuICdXd++/VeAVewecKKv2NPlfcHUAM1qK9FTnBmQvJjkdDfWzzE7QPOkAfZiEce2ECzhVJJPHWAfGuTwFpo365pO0NYjmEFr5Eas4SPeJfll2rqb38Z7/yaaD+0eNM3kPejt86REvSX6AamgdXkgoxLxAAAAAElFTkSuQmCC)](https://github.com/rothgar/awesome-tmux)
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://MenkeTechnologies.mit-license.org/2018)
 
-A tmux plugin for opening urls from browser quickly without mouse.
+> _"The net is vast and infinite."_ -- Ghost in the Shell
+
+**Jack into your tmux pane and rip URLs straight out of the datastream. No mouse. No chrome. Just pure terminal velocity.**
 
 ![screenshot](https://raw.githubusercontent.com/wfxr/i/master/tmux-fzf-url.gif)
 
-### 📥 Installation
+---
 
-Prerequisites:
-* [`fzf`](https://github.com/junegunn/fzf)
-* [`bash`](https://www.gnu.org/software/bash/) >= `4.0` (macOS ships with `bash` `3.2`!)
+### `> SYSTEM REQUIREMENTS_`
 
-**Install using [TPM](https://github.com/tmux-plugins/tpm)**
+Before you flatline, make sure your deck is loaded:
 
-Add this line to your tmux config file, then hit `prefix + I`:
+| Dependency | Min Version | Status |
+|:--|:--|:--|
+| [`fzf`](https://github.com/junegunn/fzf) | any | `REQUIRED` |
+| [`bash`](https://www.gnu.org/software/bash/) | `>= 4.0` | `REQUIRED` |
 
-``` tmux
+> **Warning:** macOS ships with `bash` `3.2` -- a relic from the old world. Upgrade or get flatlined.
+
+---
+
+### `> INSTALL.exe_`
+
+**// Via [TPM](https://github.com/tmux-plugins/tpm) -- the easy way in**
+
+Drop this line into your tmux config, then hit `prefix + I`:
+
+```tmux
 set -g @plugin 'MenkeTechnologies/tmux-fzf-url'
 ```
 
-**Install manually**
+**// Manual install -- for those who walk the dark path**
 
-Clone this repo somewhere and source `fzf-url.tmux` at the config file.
+Clone the repo. Source `fzf-url.tmux` in your config. You know the drill.
 
-### 📝 Usage
+---
 
-The default key-binding is `u`(of course prefix hit is needed), it can be modified by
-setting value to `@fzf-url-bind` at the tmux config like this:
+### `> USAGE.dat_`
 
-``` tmux
+Hit `prefix + u` and the URL extractor jacks in. Every link in your pane -- HTTP, HTTPS, FTP, SSH, raw IPs -- gets scraped, deduped, and piped through `fzf`.
+
+Pick one. Pick many. They open instantly.
+
+#### `>> CONFIG OVERRIDES`
+
+**Rebind the trigger key:**
+```tmux
 set -g @fzf-url-bind 'x'
 ```
 
-You can also extend the capture groups by defining `@fzf-url-extra-filter`:
-
-``` tmux
-# simple example for capturing files like 'abc.txt'
+**Extend the capture regex -- grab whatever data you need:**
+```tmux
+# example: snag .txt files from the stream
 set -g @fzf-url-extra-filter 'grep -oE "\b[a-zA-Z]+\.txt\b"'
 ```
 
-The plugin default captures the current screen. You can set `history_limit` to capture
-the scrollback history:
-
+**Capture scrollback history -- see beyond the screen:**
 ```tmux
 set -g @fzf-url-history-limit '2000'
 ```
 
-You can use custom fzf options by defining `@fzf-url-fzf-options`.
-
-```
-# open tmux-fzf-url in a tmux v3.2+ popup
+**Custom fzf options -- shape the interface:**
+```tmux
+# popup mode (tmux >= 3.2)
 set -g @fzf-url-fzf-options '-w 50% -h 50% --multi -0 --no-preview --no-border'
 ```
 
-### 💡 Tips
+---
 
-- You can mark multiple urls and open them at once.
-- The tmux theme showed in the screenshot is [tmux-power](https://github.com/wfxr/tmux-power).
+### `> PROTIPS.log_`
 
-### 🔗 Other plugins
+- Select multiple URLs with `TAB` -- open them all in one burst
+- Pairs well with [tmux-power](https://github.com/wfxr/tmux-power) for that full neon terminal aesthetic
 
-- [tmux-power](https://github.com/wfxr/tmux-power)
-- [tmux-net-speed](https://github.com/wfxr/tmux-net-speed)
+---
 
-### 📃 License
+### `> LINKED_NODES_`
 
-[MIT](https://MenkeTechnologies.mit-license.org/2018) (c) MenkeTechnologies
+- [tmux-power](https://github.com/wfxr/tmux-power) -- statusline that looks like it belongs in Night City
+- [tmux-net-speed](https://github.com/wfxr/tmux-net-speed) -- bandwidth monitor for your deck
+
+---
+
+### `> LICENSE_`
+
+```
+MIT (c) MenkeTechnologies
+```
+
+<sub>_End of line._</sub>
