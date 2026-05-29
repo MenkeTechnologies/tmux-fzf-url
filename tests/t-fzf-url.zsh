@@ -223,3 +223,28 @@
     body=$(cat "$tmuxFile")
     assert "$body" contains 'run -b'
 }
+
+#--------------------------------------------------------------
+# Repo-layout + README contract pins
+#--------------------------------------------------------------
+
+@test 'fzf-url.tmux is the documented entrypoint' {
+    # The README install snippet sources `fzf-url.tmux`; pin the
+    # filename so a future rename surfaces here, not as broken
+    # copy-paste lines in users' .tmux.conf.
+    [[ -f "$pluginDir/fzf-url.tmux" ]]
+    assert $state equals 0
+}
+
+@test 'README references fzf-url.tmux entrypoint' {
+    run grep -F 'fzf-url.tmux' "$pluginDir/README.md"
+    assert $state equals 0
+}
+
+@test 'fzf-url.sh has executable bit set' {
+    # The .tmux script execs `fzf-url.sh` — must be +x for the
+    # exec to succeed under tmux's strict mode (no implicit
+    # `sh` interpreter on the spawn).
+    [[ -x "$pluginDir/fzf-url.sh" ]]
+    assert $state equals 0
+}
