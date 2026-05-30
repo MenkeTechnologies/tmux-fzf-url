@@ -50,7 +50,7 @@ Clone the repo. Source `fzf-url.tmux` in your config. You know the drill.
 
 ### `> USAGE.dat_`
 
-Hit `prefix + u` and the URL extractor jacks in. Every link in your pane -- HTTP, HTTPS, FTP, SSH, raw IPs -- gets scraped, deduped, and piped through `fzf`.
+Hit `prefix + u` and the URL extractor jacks in. Every link in your pane -- `http`, `https`, `ftp`, `file`, `git`, `ssh`, plus raw `IP[:port]` addresses -- gets scraped, deduped, and piped through `fzf`.
 
 Pick one. Pick many. They open instantly.
 
